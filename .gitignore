@@ -1,0 +1,13 @@
+# dependencies (Vercel installs these itself)
+node_modules/
+
+# build output (Vercel builds this itself)
+dist/
+
+# local env / editor / OS files
+.env*
+!.env.example
+.vercel
+.DS_Store
+Thumbs.db
+*.log
