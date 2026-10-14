@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, m } from 'framer-motion'
 import { HeroView, LogoFallback, Stage3D } from '../three/lazy'
-import { MENU, MENU_STATS } from '../data/menu'
+import { MENU_STATS } from '../data/menu'
 import { useLang } from '../i18n'
 import { Magnetic } from './Extras'
 
@@ -10,8 +10,6 @@ const rise = (delay) => ({
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.9, delay: delay + 0.9, ease: [0.22, 1, 0.36, 1] }, // starts as the intro lifts
 })
-
-const SPECIAL = MENU.find((c) => c.id === 'juices').items.find((i) => i.special)
 
 function RotatingWord({ words }) {
   const [i, setI] = useState(0)
@@ -39,8 +37,7 @@ function RotatingWord({ words }) {
 }
 
 export default function Hero() {
-  const { t, lang, num } = useLang()
-  const ui = t.menuUi
+  const { t, num } = useLang()
   const stats = [
     [num(MENU_STATS.items) + '+', t.hero.stats.items],
     [num(MENU_STATS.categories), t.hero.stats.categories],
@@ -101,21 +98,6 @@ export default function Hero() {
             <HeroView className="absolute inset-0" />
           </Stage3D>
 
-          {/* real menu teaser */}
-          <m.a
-            href="#menu"
-            {...rise(0.9)}
-            className="absolute bottom-6 z-40 flex items-center gap-3 rounded-2xl bg-white/85 py-2.5 ps-2.5 pe-4 shadow-[0_20px_40px_-20px_rgba(31,34,40,0.4)] ring-1 ring-ink/5 backdrop-blur ltr:left-6 rtl:right-6 lg:bottom-16"
-          >
-            <span className="grid size-10 place-items-center rounded-xl bg-gold text-lg">★</span>
-            <span className="leading-tight">
-              <span className="block text-[11px] font-semibold text-gold-deep">{ui.special}</span>
-              <span className="block text-sm font-semibold">{SPECIAL[lang]}</span>
-              <span className="block text-xs text-ink-soft">
-                {ui.sizes.m} {num(SPECIAL.prices[0].value)} · {ui.sizes.l} {num(SPECIAL.prices[1].value)} {ui.currency}
-              </span>
-            </span>
-          </m.a>
         </m.div>
       </div>
 

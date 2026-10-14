@@ -1,8 +1,8 @@
 // Everything that pulls in three.js lives behind this module, which is loaded lazily (see lazy.jsx).
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { PerformanceMonitor, View } from '@react-three/drei'
-import { CraftScene, HeroScene, StudioScene } from './Scenes'
+import { CraftScene, HeroScene, LogoScene, StudioScene } from './Scenes'
 
 // One shared WebGL canvas; every <View> on the page renders into it
 export function Canvas3D() {
@@ -42,6 +42,16 @@ export function StudioView({ className, config, rotation }) {
   return (
     <View className={className}>
       <StudioScene config={config} rotation={rotation} />
+    </View>
+  )
+}
+
+export function LogoView({ className }) {
+  return (
+    <View className={className}>
+      <Suspense fallback={null}>
+        <LogoScene />
+      </Suspense>
     </View>
   )
 }

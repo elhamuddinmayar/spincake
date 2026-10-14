@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { ContactShadows, Environment, Float, Lightformer, PerspectiveCamera, Sparkles } from '@react-three/drei'
+import { ContactShadows, Environment, Float, Lightformer, PerspectiveCamera, Sparkles, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 import { Cake, CakeStand, Cherry, CherryTopping, Donut, Drips, Macaron, Pearls, Strawberry } from './Treats'
 
@@ -189,6 +189,68 @@ export function CraftScene({ progress }) {
         </group>
       </group>
       <ContactShadows position={[0, -1.11, 0]} opacity={0.3} scale={4} blur={2.4} far={2.5} resolution={256} color="#4a3210" />
+    </>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Footer — the Spin Cake logo as a spinning 3D gold medallion        */
+/* ------------------------------------------------------------------ */
+
+const GOLD = { color: '#f5b31a', metalness: 0.85, roughness: 0.28 }
+
+function LogoFace({ texture, back = false }) {
+  const z = back ? -0.151 : 0.151
+  return (
+    <group position={[0, 0, z]} rotation={[0, back ? Math.PI : 0, 0]}>
+      <mesh>
+        <circleGeometry args={[1.42, 64]} />
+        <meshBasicMaterial color="#fffaf1" toneMapped={false} />
+      </mesh>
+      <mesh position={[0, 0.02, 0.003]}>
+        <planeGeometry args={[2.2, 2.2]} />
+        <meshBasicMaterial map={texture} transparent toneMapped={false} />
+      </mesh>
+    </group>
+  )
+}
+
+export function LogoScene() {
+  const texture = useTexture('/img/logo.png')
+  texture.colorSpace = THREE.SRGBColorSpace
+  texture.anisotropy = 8
+  const coin = useRef()
+
+  useFrame(({ clock, pointer }, dt) => {
+    // slow spin ("Spin" Cake) that leans toward the pointer
+    coin.current.rotation.y = clock.elapsedTime * 0.7
+    coin.current.rotation.x = THREE.MathUtils.damp(coin.current.rotation.x, -pointer.y * 0.25, 4, dt)
+    coin.current.rotation.z = THREE.MathUtils.damp(coin.current.rotation.z, pointer.x * 0.1, 4, dt)
+  })
+
+  return (
+    <>
+      <PerspectiveCamera makeDefault position={[0, 0, 7]} fov={30} />
+      <Studio />
+      <Float speed={2} rotationIntensity={0.2} floatIntensity={0.8}>
+        <group ref={coin}>
+          <mesh rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[1.5, 1.5, 0.3, 96, 1, true]} />
+            <meshStandardMaterial {...GOLD} />
+          </mesh>
+          <mesh position={[0, 0, 0.15]}>
+            <torusGeometry args={[1.48, 0.07, 16, 96]} />
+            <meshStandardMaterial {...GOLD} />
+          </mesh>
+          <mesh position={[0, 0, -0.15]}>
+            <torusGeometry args={[1.48, 0.07, 16, 96]} />
+            <meshStandardMaterial {...GOLD} />
+          </mesh>
+          <LogoFace texture={texture} />
+          <LogoFace texture={texture} back />
+        </group>
+      </Float>
+      <Sparkles count={40} scale={[5, 4, 2]} size={3} speed={0.4} color="#ffc94d" />
     </>
   )
 }

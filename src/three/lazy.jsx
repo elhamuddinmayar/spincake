@@ -7,6 +7,7 @@ export const Canvas3D = lazy(() => load().then((m) => ({ default: m.Canvas3D }))
 export const HeroView = lazy(() => load().then((m) => ({ default: m.HeroView })))
 export const CraftView = lazy(() => load().then((m) => ({ default: m.CraftView })))
 export const StudioView = lazy(() => load().then((m) => ({ default: m.StudioView })))
+export const LogoView = lazy(() => load().then((m) => ({ default: m.LogoView })))
 
 const ThreeContext = createContext(false)
 
